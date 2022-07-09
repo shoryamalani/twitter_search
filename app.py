@@ -18,7 +18,7 @@ app = Flask(__name__)
 # def repeat(text):
 #     return render_template("text.html",txt=text)
 oauth2_user_handler = tweepy.OAuth2UserHandler(
-    client_id=constants.APP_ID,
+    client_id=constants.CLIENT_ID,
     redirect_uri=constants.CALLBACK_URL,
     scope=["tweet.read", "users.read", "bookmark.read"],
     client_secret=constants.CLIENT_SECRET)
