@@ -47,7 +47,7 @@ def callback():
         user = client.get_me(user_auth=False, tweet_fields=['author_id'])
         loguru.logger.info(f"user: {user}")
     except Exception as e:
-        return e
+        return str(e)
     return user.data
     
     
