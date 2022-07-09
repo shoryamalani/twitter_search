@@ -1,5 +1,4 @@
 #Dependencies
-from tkinter import E
 from flask import Flask,render_template,session,redirect,url_for,jsonify,send_from_directory,request
 from random import randint,choice
 from itsdangerous import json
