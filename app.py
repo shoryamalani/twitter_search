@@ -1,4 +1,5 @@
 #Dependencies
+from tkinter import E
 from flask import Flask,render_template,session,redirect,url_for,jsonify,send_from_directory,request
 from random import randint,choice
 from itsdangerous import json
@@ -36,11 +37,13 @@ def callback():
     state = request.args.get('state')
     code = request.args.get('code')
     access_denied = request.args.get('error')
-
-    if access_denied:
-        return render_template('error.html', error_message="the OAuth request was denied by this user")
-    twitter_redirect_uri = constants.CALLBACK_URL
-    response_url_from_app = '{}?state={}&code={}'.format(twitter_redirect_uri, state,code)
+    try:
+        if access_denied:
+            return render_template('error.html', error_message="the OAuth request was denied by this user")
+        twitter_redirect_uri = constants.CALLBACK_URL
+        response_url_from_app = '{}?state={}&code={}&code_verifier={}'.format(twitter_redirect_uri, state,code)
+    except Exception as e:
+        return e
     return response_url_from_app
     twitter_access_token = oauth2_user_handler.fetch_token(response_url_from_app)['access_token']
     client = tweepy.Client(twitter_access_token)
