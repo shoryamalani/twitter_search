@@ -10,7 +10,7 @@ import loguru
 # App stuff
 app = Flask(__name__)
 
-loguru.add(f"logs/{__name__}.log", format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}", rotation="1 day")
+loguru.logger.add(f"logs/{__name__}.log", format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}", rotation="1 day")
 #Routers
 # @app.route("/",methods=["GET"])
 # def home():
@@ -45,7 +45,7 @@ def callback():
         twitter_access_token = oauth2_user_handler.fetch_token(response_url_from_app)['access_token']
         client = tweepy.Client(twitter_access_token)
         user = client.get_me(user_auth=False, tweet_fields=['author_id'])
-        loguru.info(f"user: {user}")
+        loguru.logger.info(f"user: {user}")
     except Exception as e:
         return e
     return user.data

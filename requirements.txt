@@ -9,3 +9,4 @@ zipp==3.6.0
 tweepy
 gunicorn
 eventlet
+loguru
