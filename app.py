@@ -1,6 +1,7 @@
 #Dependencies
 from flask import Flask,render_template,session,redirect,url_for,jsonify,send_from_directory,request
 from random import randint,choice
+from itsdangerous import json
 import tweepy
 import constants
 # from dbs_scripts.get_question import *
@@ -28,6 +29,27 @@ twitter_authorize_url = (oauth2_user_handler.get_authorization_url())
 @app.route("/")
 def home():
     return render_template("index.html", authorize_url=twitter_authorize_url)
+
+# Handle Twitter Callback
+@app.route('/callback')
+def callback():
+    state = request.args.get('state')
+    code = request.args.get('code')
+    access_denied = request.args.get('error')
+
+    if access_denied:
+        return render_template('error.html', error_message="the OAuth request was denied by this user")
+    twitter_redirect_uri = constants.CALLBACK_URL
+    response_url_from_app = '{}?state={}&code={}'.format(twitter_redirect_uri, state,code)
+    twitter_access_token = oauth2_user_handler.fetch_token(response_url_from_app)['access_token']
+    client = tweepy.Client(twitter_access_token)
+    user = client.get_me(user_auth=False, tweet_fields=['author_id'])
+    id = user.data['id']
+    name = user.data['name']
+    return jsonify({"data":user.data})
+    return render_template('callback.html', name=name, tweet_count=tweet_count, authorize_url=authorize_url)
+
+
 
 
 @app.errorhandler(500)
