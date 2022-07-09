@@ -46,7 +46,7 @@ def callback():
     user = client.get_me(user_auth=False, tweet_fields=['author_id'])
     id = user.data['id']
     name = user.data['name']
-    return jsonify({"data":user.data})
+    return user.data
     return render_template('callback.html', name=name, tweet_count=tweet_count, authorize_url=authorize_url)
 
 
