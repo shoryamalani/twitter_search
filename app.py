@@ -48,7 +48,7 @@ def callback():
         loguru.logger.info(f"user: {user}")
     except Exception as e:
         return str(e)
-    return user.data
+    return jsonify({"data":user.data})
     
     
     
