@@ -41,6 +41,7 @@ def callback():
         return render_template('error.html', error_message="the OAuth request was denied by this user")
     twitter_redirect_uri = constants.CALLBACK_URL
     response_url_from_app = '{}?state={}&code={}'.format(twitter_redirect_uri, state,code)
+    return response_url_from_app
     twitter_access_token = oauth2_user_handler.fetch_token(response_url_from_app)['access_token']
     client = tweepy.Client(twitter_access_token)
     user = client.get_me(user_auth=False, tweet_fields=['author_id'])
