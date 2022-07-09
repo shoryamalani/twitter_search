@@ -40,7 +40,7 @@ def callback():
         if access_denied:
             return render_template('error.html', error_message="the OAuth request was denied by this user")
         twitter_redirect_uri = constants.CALLBACK_URL
-        response_url_from_app = '{}?state={}&code={}&code_verifier={}'.format(twitter_redirect_uri, state,code)
+        response_url_from_app = '{}?state={}&code={}'.format(twitter_redirect_uri, state,code)
     except Exception as e:
         return e
     return response_url_from_app
