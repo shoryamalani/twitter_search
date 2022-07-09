@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      {% block containercontent %}{% endblock %}
+      <hr />
+      <div class="footer">
+        <p class="text-muted">
+          <small>Created by <a href="https://github.com/shoryamalani">shoryamalani</a>. It is
+            written with a Python backend. Source code is at
+            <a href="https://github.com/shoryamalani/twitter_search">github/shoryamalani/twitter_search</a>.</small>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
+
+
