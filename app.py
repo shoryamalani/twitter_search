@@ -45,7 +45,7 @@ def callback():
         twitter_access_token = oauth2_user_handler.fetch_token(response_url_from_app)['access_token']
         client = tweepy.Client(twitter_access_token)
         user = client.get_me(user_auth=False, tweet_fields=['author_id'])
-        tweets = client.get_liked_tweets(user_auth=False, tweet_fields=['author_id'])
+        tweets = client.get_liked_tweets(id=user.data["id"],user_auth=False, tweet_fields=['author_id'])
         loguru.logger.info(f"user: {user}")
     except Exception as e:
         return str(e)
