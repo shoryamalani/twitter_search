@@ -4,12 +4,13 @@ from random import randint,choice
 from itsdangerous import json
 import tweepy
 import constants
+import loguru
 # from dbs_scripts.get_question import *
 # from misc_scripts.parse_answer import *
 # App stuff
 app = Flask(__name__)
 
-
+loguru.add(f"logs/{__name__}.log", format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}", rotation="1 day")
 #Routers
 # @app.route("/",methods=["GET"])
 # def home():
@@ -41,12 +42,16 @@ def callback():
             return render_template('error.html', error_message="the OAuth request was denied by this user")
         twitter_redirect_uri = constants.CALLBACK_URL
         response_url_from_app = '{}?state={}&code={}'.format(twitter_redirect_uri, state,code)
+        twitter_access_token = oauth2_user_handler.fetch_token(response_url_from_app)['access_token']
+        client = tweepy.Client(twitter_access_token)
+        user = client.get_me(user_auth=False, tweet_fields=['author_id'])
+        loguru.info(f"user: {user}")
     except Exception as e:
         return e
-    return response_url_from_app
-    twitter_access_token = oauth2_user_handler.fetch_token(response_url_from_app)['access_token']
-    client = tweepy.Client(twitter_access_token)
-    user = client.get_me(user_auth=False, tweet_fields=['author_id'])
+    return user.data
+    
+    
+    
     id = user.data['id']
     name = user.data['name']
     return user.data
