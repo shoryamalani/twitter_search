@@ -47,7 +47,7 @@ def callback():
         user = client.get_me(user_auth=False, tweet_fields=['author_id'])
         # tweets = client.get_liked_tweets(id=user.data["id"],user_auth=False)
         # final_tweet_data = []
-        loguru.logger.info(f"user: {tweets}")
+        # loguru.logger.info(f"user: {tweets}")
 
     except Exception as e:
         return "Error:"+str(e)
