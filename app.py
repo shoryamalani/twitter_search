@@ -22,7 +22,7 @@ loguru.logger.add(f"logs/{__name__}.log", format="{time:YYYY-MM-DD HH:mm:ss} | {
 oauth2_user_handler = tweepy.OAuth2UserHandler(
     client_id=constants.CLIENT_ID,
     redirect_uri=constants.CALLBACK_URL,
-    scope=["tweet.read", "users.read", "bookmark.read"],
+    scope=["tweet.read", "users.read", "like.read"],
     client_secret=constants.CLIENT_SECRET)
 
 twitter_authorize_url = (oauth2_user_handler.get_authorization_url())
@@ -45,11 +45,14 @@ def callback():
         twitter_access_token = oauth2_user_handler.fetch_token(response_url_from_app)['access_token']
         client = tweepy.Client(twitter_access_token)
         user = client.get_me(user_auth=False, tweet_fields=['author_id'])
-        tweets = client.get_liked_tweets(id=user.data["id"],user_auth=False, tweet_fields=['author_id'])
-        loguru.logger.info(f"user: {user}")
+        # tweets = client.get_liked_tweets(id=user.data["id"],user_auth=False)
+        # final_tweet_data = []
+        loguru.logger.info(f"user: {tweets}")
+
     except Exception as e:
-        return str(e)
-    return jsonify({"data":user.data['id'],"name":user.data['name'],"tweets_liked":tweets})
+        return "Error:"+str(e)
+    
+    return render_template("tweets.html")
     
     
     
