@@ -39,28 +39,10 @@ def make_write_to_db(items_list_tuple,table,table_columns):
             table_columns_text += column +", "
         table_columns_text = table_columns_text[:-2]
         table_columns_text += ")"
-    all_values = ""
-    for items_tuple in items_list_tuple:
-        values_text = "("
-        for value in items_tuple:
-            if type(value) == str:
-                value = value.replace("'","&apos;")
-                values_text += f"'{value}'"
-            elif type(value) == int:
-                values_text += f"{value}"
-            elif type(value) == bool:
-                values_text += f"{value}"
-            else:
-                values_text += "NULL"
-            values_text += ","
-        values_text = values_text[:-1]
-        values_text += "),"
-        all_values+=values_text+"\n"
-    all_values = all_values[:-2]
-    return f"""
+    return [f"""
     {text_first_line}{table_columns_text}
     VALUES
-    {all_values};
-    """
+    {str("%s,"*len(table_columns_text))[:-1]};
+    """,items_list_tuple]
 
         

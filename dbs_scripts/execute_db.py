@@ -7,3 +7,7 @@ def execute_database_command(conn,command):
     cur = conn.cursor()
     cur.execute(command)
     return [conn, cur]
+def executemany_database_command(conn,command):
+    cur = conn.cursor()
+    cur.executemany(command)
+    return [conn, cur]

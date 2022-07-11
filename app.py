@@ -1,4 +1,5 @@
 #Dependencies
+from site import USER_BASE
 from flask import Flask,render_template,session,redirect,url_for,jsonify,send_from_directory,request
 from random import randint,choice
 from itsdangerous import json
@@ -42,17 +43,20 @@ def callback():
             return render_template('error.html', error_message="the OAuth request was denied by this user")
         twitter_redirect_uri = constants.CALLBACK_URL
         response_url_from_app = '{}?state={}&code={}'.format(twitter_redirect_uri, state,code)
+        loguru.logger.info(code)
         twitter_access_token = oauth2_user_handler.fetch_token(response_url_from_app)['access_token']
         client = tweepy.Client(twitter_access_token)
         user = client.get_me(user_auth=False, tweet_fields=['author_id'])
-        # tweets = client.get_liked_tweets(id=user.data["id"],user_auth=False)
+        tweets = client.get_liked_tweets(id=user.data["id"],user_auth=False, tweet_fields=['id','created_at',"public_metrics"],user_fields=['id','username'])
+        loguru.logger.info(tweets[0])
+        loguru.logger.info(tweets[0][0].data)
         # final_tweet_data = []
         # loguru.logger.info(f"user: {tweets}")
 
     except Exception as e:
         return "Error:"+str(e)
-    
-    return render_template("tweets.html")
+    return jsonify({"tweets":[str(tweets)]})
+    # return render_template("search_tweets.html")
     
     
     

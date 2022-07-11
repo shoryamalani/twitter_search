@@ -10,3 +10,5 @@ tweepy
 gunicorn
 eventlet
 loguru
+psycopg2
+Flask-Login==0.4.1
