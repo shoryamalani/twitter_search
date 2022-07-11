@@ -1,0 +1,2 @@
+import database_worker
+database_worker.set_up_db()

@@ -1,0 +1,2 @@
+import database_worker
+database_worker.delete_db()

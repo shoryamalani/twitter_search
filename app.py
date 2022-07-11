@@ -6,6 +6,16 @@ from itsdangerous import json
 import tweepy
 import constants
 import loguru
+from database_worker import get_user_data
+from flask_login import (
+    LoginManager,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
+import database_worker
+import User
 # from dbs_scripts.get_question import *
 # from misc_scripts.parse_answer import *
 # App stuff
@@ -27,9 +37,21 @@ oauth2_user_handler = tweepy.OAuth2UserHandler(
     client_secret=constants.CLIENT_SECRET)
 
 twitter_authorize_url = (oauth2_user_handler.get_authorization_url())
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    return render_template("error.html",error_message="You must be logged in to access this content.")
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
 
 @app.route("/")
 def home():
+    loguru.logger.debug("Home page")
     return render_template("index.html", authorize_url=twitter_authorize_url)
 
 # Handle Twitter Callback
@@ -46,16 +68,24 @@ def callback():
         loguru.logger.info(code)
         twitter_access_token = oauth2_user_handler.fetch_token(response_url_from_app)['access_token']
         client = tweepy.Client(twitter_access_token)
-        user = client.get_me(user_auth=False, tweet_fields=['author_id'])
-        tweets = client.get_liked_tweets(id=user.data["id"],user_auth=False, tweet_fields=['id','created_at',"public_metrics"],user_fields=['id','username'])
-        loguru.logger.info(tweets[0])
-        loguru.logger.info(tweets[0][0].data)
+        user = client.get_me(user_auth=False, user_fields=[
+'created_at', 'description', 'id', 'name', 'public_metrics', 'url', 'verified', 'protected','profile_image_url'],tweet_fields=['public_metrics','author_id','non_public_metrics'])
+        loguru.logger.info(user)
+        loguru.logger.info(user[0].data)
+        user_from_db = database_worker.get_user_data(user.data["id"])
+        loguru.logger.debug(user_from_db)
+        if user_from_db == None:
+            # database_worker.add_user(user.id,user.screen_name)
+            loguru.logger.info("User not found in database")
+        # tweets = client.get_liked_tweets(id=user.data["id"],user_auth=False, tweet_fields=['id','created_at',"public_metrics"],user_fields=['id','username'])
+        
         # final_tweet_data = []
         # loguru.logger.info(f"user: {tweets}")
 
     except Exception as e:
+        loguru.logger.error(e)
         return "Error:"+str(e)
-    return jsonify({"tweets":[str(tweets)]})
+    return jsonify({"user":[str(user)]})
     # return render_template("search_tweets.html")
     
     
