@@ -12,3 +12,4 @@ eventlet
 loguru
 psycopg2
 Flask-Login==0.4.1
+flask-session

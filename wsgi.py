@@ -11,6 +11,10 @@ if __name__ == "__main__":
     #app.run()
     app = Flask(__name__)#,template_folder="./dist/app/templates"
     app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY") or os.urandom(24)
+    # app.config["SESSION_PERMANENT"] = False
+    # app.config["SESSION_TYPE"] = "filesystem"
+    # Session(app)
+    app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
     # login_manager = LoginManager()
     # login_manager.init_app(app)
     app.run(host="0.0.0.0",port=5008)

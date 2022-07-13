@@ -42,7 +42,19 @@ def make_write_to_db(items_list_tuple,table,table_columns):
     return [f"""
     {text_first_line}{table_columns_text}
     VALUES
-    {str("%s,"*len(table_columns_text))[:-1]};
+    {str("("+str("%s,"*len(table_columns))[:-1]+")")};
     """,items_list_tuple]
+def make_update(table_name,columns,values,where_column,where_value):
+    update_line = ""
+    for column in columns:
+        update_line += f"{column} = %s, "
+    update_line = update_line[:-2]
+    final_values = values
+    final_values.append(where_column)
+    final_values.append(where_value)
+    return [""" UPDATE {table_name}
+    SET = {update_line}
+    WHERE %s = %s;
+    """,final_values]
 
         
